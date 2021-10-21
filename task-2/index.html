@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        .danger {
+            padding: 5px;
+            background-color: #ff6347;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <calc></calc>
+</div>
+<template id="calc-tpl">
+    <div>
+        <ul>
+            <li v-for="(item, i) in items" :key="i">
+                {{item.name}}, остаток: {{item.rest}}
+            </li>
+        </ul>
+        <p class="danger">Остаток на складе: {{count}}</p>
+        <p>
+            <button @click="deleteItem">Удалить товар с нулевым остатком на складе</button>
+        </p>
+        <div v-if="deleted.length > 0">
+            <p>Удаленно товаров:</p>
+            <ul>
+                <li v-for="item in deleted">
+                    {{item.name}} остаток {{item.rest}}
+                </li>
+            </ul>
+        </div>
+        <p v-else>Ничего не удалено</p>
+    </div>
+</template>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.12/vue.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+<script>
+  let items = [
+    {
+      name: 'товар 1',
+      rest: 5
+    }, {
+      name: 'товар 2',
+      rest: 0
+    }, {
+      name: 'товар 3',
+      rest: 15
+    }, {
+      name: 'товар 4',
+      rest: 2
+    }, {
+      name: 'товар 5',
+      rest: 0
+    }, {
+      name: 'товар 6',
+      rest: 0
+    }
+  ]
+  Vue.component('calc', {
+    template: '#calc-tpl',
+    data () {
+      return {
+        items,
+        deleted: []
+      }
+    },
+    computed: {
+      count () {
+        return this.items.length
+      }
+    },
+    methods: {
+      deleteItem () {
+        this.deleted = _.remove(this.items, function (el) {
+          return el.rest === 0
+        })
+      }
+    }
+  })
+  new Vue({
+    el: '#app'
+  })
+</script>
+</body>
+</html>
